@@ -5,13 +5,13 @@
         <br />
         <form id="formFlags" @submit.prevent="submitAnswer()">
             <input type="text" v-model="userAnswer" />
-            <button type="button">Submit</button>
+            <button>Submit</button>
             <br />
             <br />
         </form>
-        <span>Score: {{ score }}</span>
-        <br>
-        <span>Lives left: {{ lives }}</span>
+        <span>SCORE: {{ score }}</span>
+        <br />
+        <span>CHANCES LEFT {{ chances }}</span>
     </div>
 </template>
 
@@ -30,7 +30,7 @@ export default {
             activeFlag: '',
             userAnswer: '',
             correctAnswer: '',
-            lives: '🧡🧡🧡'
+            chances: '🧡🧡🧡'
         }
     },
     methods: {
@@ -42,13 +42,13 @@ export default {
             this.flagImage = require(`/src/assets/flags/${this.activeFlag}.png`)
             return this.flagImage, this.correctAnswer
         },
-        submitAnswer() {
+        async submitAnswer() {
             if (this.userAnswer === this.correctAnswer || this.userAnswer === 'a') {
                 this.$swal.fire({
                     icon: 'success',
                     title: 'Right answer!',
                     showConfirmButton: false,
-                    timer: 100000,
+                    timer: 1000,
                     toast: true
                 })
                 this.score++
@@ -56,28 +56,57 @@ export default {
                 this.userAnswer = ''
             }
             else {
-                this.$swal.fire('Wrong answer!', `Final score: ${this.score}`, 'error')
-                this.lives = this.lives.pop()
+                this.$swal.fire({
+                    icon: 'error',
+                    title: 'Wrong answer!',
+                    showConfirmButton: false,
+                    timer: 1000,
+                    toast: true
+                })
+                this.chances = this.chances.substring(2)
+                if (this.chances.length == 0) {
+                    const { value: userName } = await this.$swal.fire({
+                        title: `You've lost! Final score: ${this.score}`,
+                        input: 'text',
+                        inputLabel: 'Enter your name to register your score',
+                        inputValue: this.$swal.inputValue,
+                        showCancelButton: true,
+                        cancelButtonText: 'No, thanks',
+                        inputValidator: (value) => {
+                            if (!value) {
+                                return 'This field is empty!'
+                            }
+                        }
+                    })
+                    if (userName) {
+                        this.$swal.fire(`Congratulations ${userName}! You've got ${this.score} country flags right!`)
+                    }
+                }
             }
         }
     },
-    mounted() {
-        this.sortFlag()
+        mounted() {
+            this.sortFlag()
+        }
     }
-}
 </script>
 <style>
 .Flags {
-    background-color: #5289ff;
+    background-color: #ffffff;
     margin-left: auto;
     margin-right: auto;
     width: 400px;
     padding: 40px 40px 80px 40px;
     height: 400px;
+    box-shadow: 10px 10px 10px 10px #0000008a;
+    border-radius: 10px;
+    /* border: 2px outset #000000; */
 }
 .Flags img {
     max-width: 400px;
     max-height: 400px;
+    box-shadow: 0px 0px 18px 2px #0000008a;;
+
     /* min-width: 200px; */
     /* min-height: 200px; */
 }
@@ -87,9 +116,9 @@ export default {
 }
 
 .swal2-toast-shown .swal2-container {
-width: 250px !important;
+    width: 250px !important;
 }
 span {
-    color: white;
+    color: black;
 }
 </style>

@@ -1,16 +1,19 @@
 <template>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
   <Home></Home>
-  <Flags></Flags>
+  <flagsMenu></flagsMenu>
 </template>
 
 <script>
 import Home from './components/Home.vue'
-import Flags from './components/Flags.vue'
+import flagsMenu from './components/flagsMenu.vue'
 export default {
   name: 'App',
   components: {
     Home,
-    Flags
+    flagsMenu
   }
 }
 </script>

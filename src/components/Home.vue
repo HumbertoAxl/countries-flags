@@ -1,5 +1,5 @@
 <template>
-  <div class="flagTest">Which country is this flag from?</div>
+  <div class="title">Which country is this flag from?</div>
   <br />
 </template>
 
