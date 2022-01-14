@@ -1,21 +1,27 @@
 <template>
-    <div class="Flags">
-        <img v-bind:src="flagImage" />
+    <div class="flags">
+        <img id="flagImage" v-bind:src="flagImage" />
         <br />
         <br />
-        <form id="formFlags" @submit.prevent="submitAnswer()">
+        <form id="formFlags">
             <input type="text" v-model="userAnswer" />
-            <button>Submit</button>
             <br />
             <br />
+            <button id="tipsButton" @click.prevent="giveTip()">💡 ({{tips}})</button>
+            <button id="submitButton" @click.prevent="submitAnswer()">Submit</button>
+            <highScore></highScore>
+            <!-- <br />
+            <div id="helpContainer">
+                <img src="../assets/images/idea.png" @click="giveTip()"> Hey, do you want a tip?
+                <br />
+                {{ tips }} tips left
+            </div> -->
         </form>
-        <span>SCORE: {{ score }}</span>
-        <br />
-        <span>CHANCES LEFT {{ chances }}</span>
     </div>
 </template>
 
 <script>
+import highScore from './highScore.vue'
 const { countries } = require('../js/countryList.js')
 let listOfAvailableFlags = [], listOfCountries = []
 for (const number in countries) {
@@ -23,14 +29,18 @@ for (const number in countries) {
     listOfCountries.push(`${countries[number]['name']}`)
 }
 export default {
+  name: 'Home',
+  components: {
+    highScore
+  },
+    props: { score: Number, chances: String },
     data() {
         return {
-            score: 0,
             flagImage: '',
             activeFlag: '',
             userAnswer: '',
             correctAnswer: '',
-            chances: '🧡🧡🧡'
+            tips: 3,
         }
     },
     methods: {
@@ -44,6 +54,7 @@ export default {
         },
         async submitAnswer() {
             if (this.userAnswer === this.correctAnswer || this.userAnswer === 'a') {
+                this.$emit('correctAnswer')
                 this.$swal.fire({
                     icon: 'success',
                     title: 'Right answer!',
@@ -51,7 +62,6 @@ export default {
                     timer: 1000,
                     toast: true
                 })
-                this.score++
                 this.sortFlag()
                 this.userAnswer = ''
             }
@@ -63,8 +73,8 @@ export default {
                     timer: 1000,
                     toast: true
                 })
-                this.chances = this.chances.substring(2)
-                if (this.chances.length == 0) {
+                this.$emit('wrongAnswer')
+                if (this.chances.length === 0) {
                     const { value: userName } = await this.$swal.fire({
                         title: `You've lost! Final score: ${this.score}`,
                         input: 'text',
@@ -83,32 +93,36 @@ export default {
                     }
                 }
             }
+        },
+        giveTip() {
+            if (this.tips == 0) {
+                this.$swal.fire('You have no tips left, sorry :(')
+                document.getElementById('tipsButton').disabled = true
+            } else { 
+                this.$swal.fire(`This country has ${this.correctAnswer.length} characters and consists of ${(this.correctAnswer.split(' ')).length} words`)
+                this.tips--
+            }
         }
     },
-        mounted() {
-            this.sortFlag()
-        }
+    mounted() {
+        this.sortFlag()
     }
+}
 </script>
 <style>
-.Flags {
+.flags {
     background-color: #ffffff;
     margin-left: auto;
     margin-right: auto;
-    width: 400px;
-    padding: 40px 40px 80px 40px;
+    width: 460px;
+    padding: 40px 20px 55px 20px;
     height: 400px;
     box-shadow: 10px 10px 10px 10px #0000008a;
-    border-radius: 10px;
-    /* border: 2px outset #000000; */
 }
-.Flags img {
+#flagImage {
     max-width: 400px;
     max-height: 400px;
-    box-shadow: 0px 0px 18px 2px #0000008a;;
-
-    /* min-width: 200px; */
-    /* min-height: 200px; */
+    box-shadow: 0px 0px 18px 2px #0000008a;
 }
 
 #formFlags {
