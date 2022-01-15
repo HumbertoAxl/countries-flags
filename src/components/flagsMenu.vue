@@ -1,21 +1,15 @@
 <template>
     <div class="flags">
         <img id="flagImage" v-bind:src="flagImage" />
-        <br />
-        <br />
         <form id="formFlags">
+            <div class="tip" v-if="showTip">{{ tip }}</div>
             <input type="text" v-model="userAnswer" />
             <br />
-            <br />
-            <button id="tipsButton" @click.prevent="giveTip()">💡 ({{tips}})</button>
-            <button id="submitButton" @click.prevent="submitAnswer()">Submit</button>
+            <div class="buttonsContainer">
+                <button id="tipsNumberButton" @click.prevent="giveTip()">💡 ({{ tipsNumber }})</button>
+                <button id="submitButton" type="button" @click.prevent="submitAnswer()">Submit</button>
+            </div>
             <highScore></highScore>
-            <!-- <br />
-            <div id="helpContainer">
-                <img src="../assets/images/idea.png" @click="giveTip()"> Hey, do you want a tip?
-                <br />
-                {{ tips }} tips left
-            </div> -->
         </form>
     </div>
 </template>
@@ -29,10 +23,10 @@ for (const number in countries) {
     listOfCountries.push(`${countries[number]['name']}`)
 }
 export default {
-  name: 'Home',
-  components: {
-    highScore
-  },
+    name: 'Home',
+    components: {
+        highScore
+    },
     props: { score: Number, chances: String },
     data() {
         return {
@@ -40,7 +34,9 @@ export default {
             activeFlag: '',
             userAnswer: '',
             correctAnswer: '',
-            tips: 3,
+            tipsNumber: 5,
+            showTip: false,
+            tip: ''
         }
     },
     methods: {
@@ -48,21 +44,24 @@ export default {
             let randomNumber = Math.floor(Math.random() * listOfAvailableFlags.length)
             this.activeFlag = listOfAvailableFlags[randomNumber].toLocaleLowerCase()
             console.log('Bandeira gerada: ' + this.activeFlag)
-            this.correctAnswer = countries[randomNumber]['name']
+            this.correctAnswer = countries[randomNumber]['name'].toLocaleLowerCase()
             this.flagImage = require(`/src/assets/flags/${this.activeFlag}.png`)
             return this.flagImage, this.correctAnswer
         },
         async submitAnswer() {
-            if (this.userAnswer === this.correctAnswer || this.userAnswer === 'a') {
+            if (this.userAnswer.toLocaleLowerCase() === this.correctAnswer || this.userAnswer === 'a') {
                 this.$emit('correctAnswer')
-                this.$swal.fire({
+                await this.$swal.fire({
                     icon: 'success',
                     title: 'Right answer!',
                     showConfirmButton: false,
                     timer: 1000,
-                    toast: true
+                    toast: true,
+                    allowOutsideClick: false,
+                    customClass: 'swal-answer'
                 })
                 this.sortFlag()
+                this.showTip = false
                 this.userAnswer = ''
             }
             else {
@@ -71,7 +70,9 @@ export default {
                     title: 'Wrong answer!',
                     showConfirmButton: false,
                     timer: 1000,
-                    toast: true
+                    toast: true,
+                    allowOutsideClick: false,
+                    customClass: 'swal-answer'
                 })
                 this.$emit('wrongAnswer')
                 if (this.chances.length === 0) {
@@ -95,13 +96,40 @@ export default {
             }
         },
         giveTip() {
-            if (this.tips == 0) {
+            if (this.tipsNumber == 0) {
                 this.$swal.fire('You have no tips left, sorry :(')
                 document.getElementById('tipsButton').disabled = true
-            } else { 
-                this.$swal.fire(`This country has ${this.correctAnswer.length} characters and consists of ${(this.correctAnswer.split(' ')).length} words`)
-                this.tips--
+            } else {
+                this.showTip = true
+                this.tipsNumber--
+                this.tip = this.generateTip()
             }
+        },
+        generateTip() {
+            let randomNumbers = []
+            let tipArray = []
+            // if (this.correctAnswer.length <= 6) {
+            while (randomNumbers.length < 2) {
+                let sortedNumber = Math.floor(Math.random() * this.correctAnswer.length)
+                if (!randomNumbers.includes(sortedNumber)) {
+                    randomNumbers.push(sortedNumber)
+                }
+            }
+            randomNumbers.sort(function (a, b) {
+                return a - b;
+            });
+            console.log(randomNumbers)
+            for (let i = 0; i < this.correctAnswer.length; i++) {
+                tipArray.push('_')
+            }
+            for (let i = 0; i < randomNumbers[1]; i++) {
+                if (randomNumbers[i]>-1) {
+                    tipArray[randomNumbers[i]] = this.correctAnswer[randomNumbers[i]]
+                }
+            }
+            tipArray[0] = tipArray[0].toUpperCase()
+            tipArray = tipArray.join(' ')
+            return tipArray
         }
     },
     mounted() {
@@ -112,12 +140,7 @@ export default {
 <style>
 .flags {
     background-color: #ffffff;
-    margin-left: auto;
-    margin-right: auto;
-    width: 460px;
-    padding: 40px 20px 55px 20px;
-    height: 400px;
-    box-shadow: 10px 10px 10px 10px #0000008a;
+    margin: 40px 10px 55px 10px;
 }
 #flagImage {
     max-width: 400px;
@@ -129,10 +152,31 @@ export default {
     margin-top: 20px;
 }
 
-.swal2-toast-shown .swal2-container {
-    width: 250px !important;
+#formFlags input {
+    width: 210px;
+    height: 20px;
+    text-align: center;
+    border-style: solid;
+    border-radius: 5px;
+    border-color: rgb(179, 179, 179);
+    outline: none;
+}
+#formFlags input:focus {
+    border-color: #00b6f8;
 }
 span {
     color: black;
+}
+.buttonsContainer {
+    margin-top: 10px;
+    display: inline-flex;
+    justify-content: space-between;
+    width: 160px;
+}
+.swal-answer {
+    width: 225px !important;
+}
+.tip {
+    margin-bottom: 10px;
 }
 </style>

@@ -1,6 +1,6 @@
 <template>
     <div class="highScoreContainer">
-        <button id="highScoreButton" @click.prevent="showHighScores()">Show high scores</button>
+        <button id="highScoreButton" @click.prevent="workInProgress()">Show high scores</button>
     </div>
 </template>
 <script>
@@ -12,6 +12,16 @@ export default {
         }
     },
     methods: {
+        workInProgress () {
+                this.$swal.fire({
+                    icon: 'warning',
+                    title: 'Work in progress!',
+                    customClass: 'swal-workInProgress',
+                    showConfirmButton: false,
+                    timer: 1000,
+                    toast: true
+                })
+        },
         async showHighScores() {
             this.topScores = await this.getHighScores()
             this.topScores.sort(function (a, b) {
@@ -36,7 +46,17 @@ export default {
 </script>
 <style>
 #highScoreButton {
-    margin-top: 15px;
-    width: 150px;
+    margin-top: 10px;
+    width: 160px;
+}
+.highScoreContainer {
+    margin-bottom: 40px;
+}
+.swal-workInProgress {
+    width: 250px !important;
+    font-weight: bold !important;
+}
+.swal-workInProgress .swal2-html-container {
+font-weight: bold !important;
 }
 </style>

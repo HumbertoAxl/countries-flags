@@ -5,12 +5,7 @@
       Guess this flag!
       <span style="float: right">Score: {{ score }}</span>
     </div>
-    <flagsMenu @correctAnswer="score++" @wrongAnswer="wrongAnswer()" score="score">
-    </flagsMenu>
-    <!-- <highScore></highScore> -->
-    <!-- <div class="highScore"> -->
-      <!-- <button @click.prevent="checkHighScores">High scores</button> -->
-    <!-- </div> -->
+    <flagsMenu @correctAnswer="score++" @wrongAnswer="wrongAnswer()"></flagsMenu>
   </div>
 </template>
 
@@ -30,10 +25,22 @@ export default {
   },
   methods: {
     wrongAnswer() {
-      this.chances = this.chances.substring(2)
-      if (this.chances.length === 0) {
+      if (!this.chances.includes('🧡')) {
+        setTimeout(() => this.$swal.fire({
+          icon: 'error',
+          title: 'Game over!',
+          text: `Final score = ${this.score}`,
+          customClass: 'swal-gameOver',
+          showConfirmButton: true,
+          confirmButtonText: 'Ok!',
+          allowOutsideClick: false
+        }).then(function () {
+          window.location = "/";
+        }), 1200)
         this.$emit('gameEnded')
-      }
+      } else {
+        setTimeout(() => this.chances = this.chances.substring(2) + '🤍', 1100)
+        }
     }
   }
 }
@@ -43,17 +50,31 @@ export default {
   color: white;
   text-align: center;
   font-weight: bold;
-  width: 400px;
-  margin-right: auto;
-  margin-left: auto;
+  font-size: 1.03em;
   height: 30px;
-  background-color: #00AEEF;
-  padding-left: 50px;
-  padding-right: 50px;
+  background-color: #00aeef;
+  padding-left: 40px;
+  padding-right: 40px;
   padding-top: 10px;
   line-height: 15px;
+  box-shadow: 0px 3px 5px 0px #0000008a;
+  border-top-left-radius: 7px;
+  border-top-right-radius: 7px;
 }
 span {
-  color: white
+  color: white;
 }
+
+.container {
+  width: 480px;
+  margin-top: 60px;
+  margin-left: auto;
+  margin-right: auto;
+  display: inline-block;
+  background-color: white;
+  box-shadow: 10px 10px 10px 10px #0000008a;
+  border-radius: 7px;
+  user-select: none;
+}
+
 </style>
