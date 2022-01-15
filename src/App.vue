@@ -17,11 +17,17 @@ export default {
 
 <style>
 body {
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  background-image: url("../src/assets/geobackground.jpg");
-  background-size: 100%;
-  margin: 0;
-  padding: 0;
+    font-family: Segoe UI,Tahoma,Geneva,Verdana,sans-serif;
+    background-image: url(../img/geobackground.3e2c9db9.jpg);
+    background-size: 100%;
+    margin: 0;
+    padding: 0;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-attachment: fixed;
+    background-size: cover;
+    height: 100%;
+    width: 100%;
 }
 
 #app {
