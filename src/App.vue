@@ -74,14 +74,4 @@ pre {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
 }
-
-.swal-gameOver .swal2-styled.swal2-confirm {
-  background-color: #00aeef !important;
-  height: 38px !important;
-  width: 58px !important;
-}
-
-.swal-gameOver .swal2-styled.swal2-confirm:focus {
-  box-shadow: 0 0 0 0px !important;
-}
 </style>

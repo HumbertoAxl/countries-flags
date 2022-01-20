@@ -4,14 +4,15 @@
       <div class="title">
         <span style="float: left">{{ chances }}</span>
         {{appText[appLang]['score']}}: {{ score }}
-        <span style="float: right">{{appText[appLang]['tip']}}: 20</span>
+        <span style="float: right">{{appText[appLang]['tip']}}: {{tipsNumber}}</span>
       </div>
       <flagsMenu
         ref="flagsMenu"
         @correctAnswer="score++"
         @wrongAnswer="wrongAnswer()"
-        :chances="chances"
+        @tipUsed="tipsNumber--"
         :score="score"
+        :tipsNumber="tipsNumber"
         :appLang="appLang"
         :appText="appText"
       ></flagsMenu>
@@ -32,7 +33,8 @@ export default {
     return {
       score: 0,
       chances: '🧡🧡🧡',
-      appLang: false
+      appLang: false,
+      tipsNumber: 20
     }
   },
   methods: {
@@ -48,7 +50,7 @@ export default {
           allowOutsideClick: false
         }).then(function () {
           window.location = "/";
-        }), 1200)
+        }))
       } else {
         this.chances = this.chances.substring(2) + '🤍'
       }
@@ -108,5 +110,13 @@ span {
   box-shadow: 10px 10px 10px 10px #0000008a;
   border-radius: 7px;
   user-select: none;
+}
+
+.swal-gameOver .swal2-styled.swal2-confirm {
+  background-color: #00aeef !important;
+}
+
+.swal-gameOver .swal2-styled.swal2-confirm:focus {
+  box-shadow: 0 0 0 0px !important;
 }
 </style>

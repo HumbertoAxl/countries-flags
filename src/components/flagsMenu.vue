@@ -28,14 +28,13 @@ export default {
     components: {
         highScore
     },
-    props: { score: Number, chances: String, appLang: String, appText: Object },
+    props: { score: Number, chances: String, tipsNumber: String, appLang: String, appText: Object },
     data() {
         return {
             flagImage: '',
             activeFlag: '',
             userAnswer: '',
             correctAnswer: '',
-            tipsNumber: 20,
             showTip: false,
             tip: '',
         }
@@ -53,6 +52,8 @@ export default {
         async submitAnswer() {
             if (this.userAnswer.toLocaleLowerCase() === this.correctAnswer || this.userAnswer.toLocaleLowerCase() === 'damiao') {
                 this.$emit('correctAnswer')
+                document.querySelector("#formFlags > div.tipContainer").style.visibility = 'hidden'
+                document.getElementById('tipsButton').disabled = false
                 await this.$swal.fire({
                     icon: 'success',
                     title: this.appText[this.appLang]['correctAnswer'],
@@ -99,7 +100,7 @@ export default {
                 // document.getElementById('tipsButton').disabled = true
             } else {
                 this.showTip = true
-                this.tipsNumber--
+                this.$emit('tipUsed')
                 document.getElementById('tipsButton').disabled = true
                 this.tip = this.generateTip()
             }
@@ -122,7 +123,6 @@ export default {
             randomNumbers.sort(function (a, b) {
                 return a - b;
             })
-            console.log(randomNumbers)
             for (let i = 0; i < this.correctAnswer.length; i++) {
                 switch (this.correctAnswer[i]) {
                     case '-': tipArray.push('-')
