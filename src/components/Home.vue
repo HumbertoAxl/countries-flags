@@ -1,12 +1,22 @@
 <template>
-  <div class="container">
-    <div class="title">
-      <span style="float: left">{{ chances }}</span>
-      Guess this flag!
-      <span style="float: right">Score: {{ score }}</span>
+  <template v-if="appLang">
+    <div class="container">
+      <div class="title">
+        <span style="float: left">{{ chances }}</span>
+        {{appText[appLang]['score']}}: {{ score }}
+        <span style="float: right">{{appText[appLang]['tip']}}: 20</span>
+      </div>
+      <flagsMenu
+        ref="flagsMenu"
+        @correctAnswer="score++"
+        @wrongAnswer="wrongAnswer()"
+        :chances="chances"
+        :score="score"
+        :appLang="appLang"
+        :appText="appText"
+      ></flagsMenu>
     </div>
-    <flagsMenu @correctAnswer="score++" @wrongAnswer="wrongAnswer()"></flagsMenu>
-  </div>
+  </template>
 </template>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
@@ -17,10 +27,12 @@ export default {
   components: {
     flagsMenu
   },
+  props: { appText: String },
   data() {
     return {
       score: 0,
-      chances: '🧡🧡🧡'
+      chances: '🧡🧡🧡',
+      appLang: false
     }
   },
   methods: {
@@ -32,15 +44,37 @@ export default {
           text: `Final score = ${this.score}`,
           customClass: 'swal-gameOver',
           showConfirmButton: true,
-          confirmButtonText: 'Ok!',
+          confirmButtonText: 'Play again!',
           allowOutsideClick: false
         }).then(function () {
           window.location = "/";
         }), 1200)
-        this.$emit('gameEnded')
       } else {
-        setTimeout(() => this.chances = this.chances.substring(2) + '🤍', 1100)
+        this.chances = this.chances.substring(2) + '🤍'
+      }
+    },
+    async getPlayerInfo() {
+      await this.$swal.fire({
+        title: 'Hello! Select your prefered language!',
+        showDenyButton: true,
+        confirmButtonText: 'Português',
+        denyButtonText: `English`,
+        allowOutsideClick: false
+      }).then((result) => {
+        if (result.isConfirmed) {
+          this.appLang = 'BR'
+        } else if (result.isDenied) {
+          this.appLang = 'EN'
         }
+      })
+      this.$refs.flagsMenu.sortFlag()
+    }
+  },
+  mounted() {
+    document.onreadystatechange = () => {
+      if (document.readyState == "complete") {
+        this.getPlayerInfo()
+      }
     }
   }
 }
@@ -67,7 +101,6 @@ span {
 
 .container {
   width: 480px;
-  margin-top: 60px;
   margin-left: auto;
   margin-right: auto;
   display: inline-block;
@@ -76,5 +109,4 @@ span {
   border-radius: 7px;
   user-select: none;
 }
-
 </style>

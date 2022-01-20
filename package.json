@@ -1,6 +1,6 @@
 {
-  "name": "countries-project",
-  "version": "0.1.0",
+  "name": "guess-this-flag",
+  "version": "0.0.3",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",

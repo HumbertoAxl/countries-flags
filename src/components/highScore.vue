@@ -1,11 +1,12 @@
 <template>
     <div class="highScoreContainer">
-        <button id="highScoreButton" @click.prevent="workInProgress()">Show high scores</button>
+        <button id="highScoreButton" @click.prevent="workInProgress()">{{this.appText[this.appLang]['showHighScores']}}</button>
     </div>
 </template>
 <script>
 export default {
   name: 'High Score',
+    props: { appLang: String, appText: Object },
     data() {
         return {
             topScores: []
@@ -15,7 +16,7 @@ export default {
         workInProgress () {
                 this.$swal.fire({
                     icon: 'warning',
-                    title: 'Work in progress!',
+                    title: this.appText[this.appLang]['workInProgress'],
                     customClass: 'swal-workInProgress',
                     showConfirmButton: false,
                     timer: 1000,
@@ -47,13 +48,13 @@ export default {
 <style>
 #highScoreButton {
     margin-top: 10px;
-    width: 160px;
+    width: 160px !important;
 }
 .highScoreContainer {
     margin-bottom: 40px;
 }
 .swal-workInProgress {
-    width: 250px !important;
+    width: 265px !important;
     font-weight: bold !important;
 }
 .swal-workInProgress .swal2-html-container {
