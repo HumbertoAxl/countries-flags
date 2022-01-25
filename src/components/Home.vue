@@ -28,25 +28,31 @@ export default {
   components: {
     flagsMenu
   },
-  props: { appText: String },
   data() {
     return {
       score: 0,
       chances: '🧡🧡🧡',
       appLang: false,
-      tipsNumber: 20
+      tipsNumber: 20,
+      correctAnswer: ''
     }
   },
+    props: { 
+    appText: Object,
+  },
   methods: {
-    wrongAnswer() {
+    async wrongAnswer() {
+      let gameOverText =  this.appText[this.appLang]['gameOver']
+      gameOverText[1] = this.$refs.flagsMenu.gameOver()
+      gameOverText[3] = this.score
       if (!this.chances.includes('🧡')) {
         setTimeout(() => this.$swal.fire({
           icon: 'error',
           title: 'Game over!',
-          text: `Final score = ${this.score}`,
+          html: gameOverText.join(''),
           customClass: 'swal-gameOver',
           showConfirmButton: true,
-          confirmButtonText: 'Play again!',
+          confirmButtonText: this.appText[this.appLang]['playAgain'],
           allowOutsideClick: false
         }).then(function () {
           window.location = "/";
@@ -57,10 +63,14 @@ export default {
     },
     async getPlayerInfo() {
       await this.$swal.fire({
-        title: 'Hello! Select your prefered language!',
+        title: 'Hello! Select your preferred language!',
+        text: 'Olá, escolha a sua língua preferida',
+        customClass: 'swal-languageSelect',
         showDenyButton: true,
         confirmButtonText: 'Português',
-        denyButtonText: `English`,
+        confirmButtonColor: '#31A523',
+        denyButtonText: 'English',
+        denyButtonColor: '#D51924',
         allowOutsideClick: false
       }).then((result) => {
         if (result.isConfirmed) {
@@ -69,7 +79,7 @@ export default {
           this.appLang = 'EN'
         }
       })
-      this.$refs.flagsMenu.sortFlag()
+      this.$refs.flagsMenu.drawFlag()
     }
   },
   mounted() {

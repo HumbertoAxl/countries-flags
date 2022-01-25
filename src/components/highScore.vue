@@ -1,11 +1,14 @@
 <template>
     <div class="highScoreContainer">
-        <button id="highScoreButton" @click.prevent="workInProgress()">{{this.appText[this.appLang]['showHighScores']}}</button>
+        <button
+            id="highScoreButton"
+            @click.prevent="workInProgress()"
+        >{{ this.appText[this.appLang]['showHighScores'] }}</button>
     </div>
 </template>
 <script>
 export default {
-  name: 'High Score',
+    name: 'High Score',
     props: { appLang: String, appText: Object },
     data() {
         return {
@@ -13,15 +16,15 @@ export default {
         }
     },
     methods: {
-        workInProgress () {
-                this.$swal.fire({
-                    icon: 'warning',
-                    title: this.appText[this.appLang]['workInProgress'],
-                    customClass: 'swal-workInProgress',
-                    showConfirmButton: false,
-                    timer: 1000,
-                    toast: true
-                })
+        workInProgress() {
+            this.$swal.fire({
+                icon: 'warning',
+                title: this.appText[this.appLang]['workInProgress'],
+                customClass: 'swal-workInProgress',
+                showConfirmButton: false,
+                timer: 1000,
+                toast: true
+            })
         },
         async showHighScores() {
             this.topScores = await this.getHighScores()
@@ -48,7 +51,7 @@ export default {
 <style>
 #highScoreButton {
     margin-top: 10px;
-    width: 160px !important;
+    width: 180px !important;
 }
 .highScoreContainer {
     margin-bottom: 40px;
@@ -58,6 +61,6 @@ export default {
     font-weight: bold !important;
 }
 .swal-workInProgress .swal2-html-container {
-font-weight: bold !important;
+    font-weight: bold !important;
 }
 </style>

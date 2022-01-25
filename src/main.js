@@ -6,6 +6,6 @@ const app = createApp(App)
 // app.component = ('Home', Home)
 app.mount('#app')
 const sweetAlertOptions = {
-
+    allowOutsideClick: false
 }
 app.use(VueSweetalert2, sweetAlertOptions)

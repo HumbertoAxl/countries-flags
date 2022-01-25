@@ -1,6 +1,6 @@
 <template>
 <head>
-  <meta name="viewport" content="width=device-width, initial-scale=0.9" />
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, user-scalable=0" />
 </head>
 <Home v-bind:appText="appText"></Home>
 </template>
@@ -22,7 +22,11 @@ export default {
           correctAnswer: 'Correct answer!',
           wrongAnswer: 'Wrong answer!',
           showHighScores: 'Show high scores',
-          workInProgress: 'Work in progress'
+          workInProgress: 'Work in progress',
+          gameOver: ['The answer was: <b>', 'answer','</b><br><br>Final score: ', 'score'],
+          playAgain: 'Play again!',
+          congratulations: 'Congratulations!',
+          gameWon: `Wow, you've got all the flags right! That's impressive! You can call yourself a flag master.`
         },
         BR: {
           tip: 'Dica',
@@ -31,15 +35,20 @@ export default {
           correctAnswer: 'Resposta correta!',
           wrongAnswer: 'Resposta incorreta!',
           showHighScores: 'Melhores pontuações',
-          workInProgress: 'Em desenvolvimento'
+          workInProgress: 'Em desenvolvimento',
+          gameOver: ['A resposta era: <b>', 'answer','</b><br><br>Pontuação final: ', 'score'],
+          playAgain: 'Jogar novamente!',
+          congratulations: 'Parabéns',
+          gameWon: `Você acertou todas as bandeiras! Que impressionante! Pode-se dizer que você é o mestre das bandeiras.`
         }
-      }
+      },
     }
-  },
+  }
 }
 </script>
 
 <style>
+
 body {
   font-family: Segoe UI, Tahoma, Geneva, Verdana, sans-serif;
   background-image: url("./assets/geobackground.jpg");
@@ -72,6 +81,10 @@ pre {
   font-family: Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  -webkit-text-size-adjust: none !important;
   text-align: center;
+}
+.swal-languageSelect .swal2-title {
+  font-size: 1.5em !important;
 }
 </style>

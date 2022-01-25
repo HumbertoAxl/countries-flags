@@ -5,13 +5,13 @@
             <div class="tipContainer">
                 <pre> {{ tip }} </pre>
             </div>
-            <input type="text" v-model="userAnswer" />
+            <input type="text" v-model="userAnswer"/>
             <br />
             <div class="buttonsContainer">
-                <button id="tipsButton" @click.prevent="giveTip()">💡</button>
+                <button id="tipsButton" type="button" @click.prevent="giveTip()">💡</button>
                 <button
                     id="submitButton"
-                    type="button"
+                    type="submit"
                     @click.prevent="submitAnswer()"
                 >{{ this.appText[this.appLang]['submit'] }}</button>
             </div>
@@ -28,7 +28,7 @@ export default {
     components: {
         highScore
     },
-    props: { score: Number, chances: String, tipsNumber: String, appLang: String, appText: Object },
+    props: { score: Number, chances: String, tipsNumber: Number, appLang: String, appText: Object, gameOverAnswer: Function },
     data() {
         return {
             flagImage: '',
@@ -40,17 +40,16 @@ export default {
         }
     },
     methods: {
-        sortFlag() {
+        drawFlag() {
             let randomNumber = Math.floor(Math.random() * countries.length)
             this.activeFlag = countries[randomNumber][`code`].toLocaleLowerCase()
-            this.correctAnswer = countries[randomNumber][`name${this.appLang}`].toLocaleLowerCase()
-            console.log(this.correctAnswer ?? 'error')
+            this.correctAnswer = countries[randomNumber][`name${this.appLang}`]
             this.flagImage = require(`/src/assets/flags/${this.activeFlag}.png`)
             countries.splice(randomNumber, 1)
             return this.flagImage, this.correctAnswer
         },
         async submitAnswer() {
-            if (this.userAnswer.toLocaleLowerCase() === this.correctAnswer || this.userAnswer.toLocaleLowerCase() === 'damiao') {
+            if (this.userAnswer.toLocaleLowerCase() === this.correctAnswer.toLocaleLowerCase() || this.userAnswer.toLocaleLowerCase() === 'damiao') {
                 this.$emit('correctAnswer')
                 document.querySelector("#formFlags > div.tipContainer").style.visibility = 'hidden'
                 document.getElementById('tipsButton').disabled = false
@@ -58,7 +57,7 @@ export default {
                     icon: 'success',
                     title: this.appText[this.appLang]['correctAnswer'],
                     showConfirmButton: false,
-                    timer: 1000,
+                    timer: 1000000,
                     toast: true,
                     allowOutsideClick: false,
                     customClass: `swal-answer${this.appLang}`
@@ -66,14 +65,14 @@ export default {
                 if (countries.length > 0) {
                     this.showTip = false
                     this.userAnswer = ''
-                    this.sortFlag()
+                    this.drawFlag()
                 } else {
                     await this.$swal.fire({
                         icon: 'success',
-                        title: 'Congratulations!',
-                        text: `Wow, you've got all the flags right! That's impressive! You can call yourself a flag master`,
+                        title: this.appText[this.appLang]['congratulations'],
+                        text: this.appText[this.appLang]['gameWon'],
                         showConfirmButton: true,
-                        confirmButtonText: 'Play again!',
+                        confirmButtonText: this.appText[this.appLang]['playAgain'],
                         allowOutsideClick: false,
                         customClass: 'swal-congratulations'
                     }).then(() => {
@@ -97,7 +96,6 @@ export default {
         giveTip() {
             if (this.tipsNumber == 0) {
                 this.$swal.fire('You have no tips left, sorry :(')
-                // document.getElementById('tipsButton').disabled = true
             } else {
                 this.showTip = true
                 this.$emit('tipUsed')
@@ -144,11 +142,19 @@ export default {
             tipArray = tipArray.replace(`${/[A-Za-z] [A-Za-z]/g}`,'')
             document.querySelector("#formFlags > div.tipContainer").style.visibility = 'visible'
             return tipArray
+        },
+        gameOver(){
+            return this.correctAnswer
         }
     },
 }
 </script>
 <style>
+
+.container {
+  max-width: 100% !important;
+}
+
 .flags {
     background-color: #ffffff;
     margin: 40px 10px 55px 10px;
@@ -167,6 +173,7 @@ export default {
     border-radius: 5px;
     border-color: rgb(179, 179, 179);
     outline: none;
+    font-size: 16px;
 }
 #formFlags input:focus {
     border-color: #00b6f8;
@@ -178,7 +185,7 @@ span {
     margin-top: 10px;
     display: inline-flex;
     justify-content: space-between;
-    width: 160px;
+    width: 180px;
 }
 #formFlags button {
     height: 28px;
@@ -205,14 +212,14 @@ span {
 }
 
 #tipsButton {
-    width: 65px;
+    width: 75px;
 }
 
 #submitButton {
     width: 85px;
 }
 .swal-answerEN {
-    width: 230px !important;
+    width: 240px !important;
 }
 
 .swal-answerBR {
@@ -227,4 +234,25 @@ span {
 .tip {
     margin-bottom: 10px;
 }
+
+.swal-answerEN .swal2-title {
+    font-family: arial !important;
+    font-weight: 600 !important;
+    font-size: 1em !important;
+    margin-top: 10px !important;
+    margin-right: 10px !important;
+    margin-bottom: 5px !important;
+    margin-left: 10px !important;
+}
+
+.swal-answerBR .swal2-title {
+    font-family: arial !important;
+    font-weight: 600 !important;
+    font-size: 1em !important;
+    margin-top: 10px !important;
+    margin-right: 10px !important;
+    margin-bottom: 5px !important;
+    margin-left: 10px !important;
+}
+
 </style>
