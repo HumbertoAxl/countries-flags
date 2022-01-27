@@ -57,7 +57,7 @@ export default {
                     icon: 'success',
                     title: this.appText[this.appLang]['correctAnswer'],
                     showConfirmButton: false,
-                    timer: 1000000,
+                    timer: 1000,
                     toast: true,
                     allowOutsideClick: false,
                     customClass: `swal-answer${this.appLang}`
