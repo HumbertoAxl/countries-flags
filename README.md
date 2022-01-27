@@ -1,4 +1,4 @@
-# cities-project
+# Flag-guesser
 
 ## Project setup
 ```
