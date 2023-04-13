@@ -22,7 +22,7 @@
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <script>
-import FlagsMenu from './FlagsMenu.vue';
+import FlagsMenu from "./FlagsMenu.vue";
 export default {
     name: "Home",
     components: {
