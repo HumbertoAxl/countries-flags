@@ -46,6 +46,7 @@ export default {
             gameOverText[1] = this.$refs.FlagsMenu.gameOver();
             gameOverText[3] = this.score;
             if (!this.chances.includes("🧡")) {
+                console.log(process.env.VUE_APP_NOT_SECRET_CODE)
                 setTimeout(() =>
                     this.$swal
                         .fire({
