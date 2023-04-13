@@ -15,18 +15,18 @@
                     @click.prevent="submitAnswer()"
                 >{{ this.appText[this.appLang]['submit'] }}</button>
             </div>
-            <highScore v-bind:appLang="appLang" v-bind:appText="appText"></highScore>
+            <HighScore v-bind:appLang="appLang" v-bind:appText="appText"></HighScore>
         </form>
     </div>
 </template>
 
 <script>
-import highScore from './highScore.vue'
+import HighScore from './HighScore.vue'
 const { countries } = require('../js/countryList.js')
 export default {
     name: 'Flags Menu',
     components: {
-        highScore
+        HighScore
     },
     props: { score: Number, chances: String, tipsNumber: Number, appLang: String, appText: Object, gameOverAnswer: Function },
     data() {
@@ -144,7 +144,7 @@ export default {
             return tipArray
         },
         gameOver(){
-            return this.correctAnswer
+            return this.correctAnswer;
         }
     },
 }
