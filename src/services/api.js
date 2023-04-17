@@ -1,19 +1,20 @@
 import database from "./firebaseConfig";
-// import database from "@/services/firebaseConfig";
 import { get, ref, set, child } from "firebase/database";
 
 const playersRef = ref(database, "players");
 
-export async function saveScore(username, score) {
+export async function saveScore(username, userScore) {
     const data = {
         username: username,
-        score: score,
+        score: userScore,
         date: new Date().toLocaleDateString("en-GB"),
     };
+    await getPlayerRank(data);
 
     const numPlayers = await getNumberOfPlayers();
     const newScoreRef = child(playersRef, `${numPlayers}`);
     await set(newScoreRef, data)
+    return getNumberOfPlayers();
 }
 
 export async function getNumberOfPlayers() {
@@ -21,3 +22,24 @@ export async function getNumberOfPlayers() {
     const numPlayers = snapshot.size;
     return numPlayers;
 }
+
+async function getPlayerRank(data) {
+    const scores = await getPlayersScores();
+    
+    scores.sort((a, b) => {
+        if (b.score !== a.score) {
+          return b.score - a.score;
+        } else {
+          return new Date(b.date) - new Date(a.date);
+        }
+      });
+      
+    const numberOfPlayers = await getNumberOfPlayers();
+}
+
+//Gets all scores on firebase database
+async function getPlayersScores() {
+    const snapshot = await get(playersRef);
+    const data = snapshot.val();
+    return data;
+  }

@@ -20,7 +20,6 @@
     </template>
 </template>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <script>
 import { saveScore } from "@/services/api";
 import FlagsContainer from "@/components/FlagsContainer.vue";
@@ -64,47 +63,27 @@ export default {
                         showLoaderOnConfirm: true,
                         cancelButtonText: "Não salvar",
                         confirmButtonText: "Salvar",
+                        closeOnConfirm: false,
+                        reverseButtons: true,
                     })
                     .then(async (result) => {
                         console.log(result);
                         if (result.isConfirmed) {
-                            await saveScore(result.value, this.score).then(() => {
+                            await saveScore(result.value, this.score).then((numberOfPlayers) => {
                                 this.$swal.fire({
-                                    title: `Score saved! Your position is: #1 out of 10`,
+                                    title: `Done! Your position is: #1 out of 10`, //TODO: Show actual player numbers
+                                    text: "Let's improve this score even more?",
+                                    confirmButtonText: "Yes!",
+                                    allowOutsideClick: false,
+                                }).then((result) => {
+                                    if (result.isConfirmed) { window.location = "/"; };
                                 });
                             });
-                            window.location = "/";
                         }
+                        // this.$swal.fire({
+                        //     title: "Wanna play again?"
+                        // })
                     });
-                // Swal.fire({
-                //     title: "Game over!",
-                //     input: "text",
-                //     inputAttributes: {
-                //         autocapitalize: "off",
-                //     },
-                //     showCancelButton: true,
-                //     confirmButtonText: "Save",
-                //     showLoaderOnConfirm: true,
-                //     preConfirm: (login) => {
-                //         return fetch(`//api.github.com/users/${login}`)
-                //             .then((response) => {
-                //                 if (!response.ok) {
-                //                     throw new Error(response.statusText);
-                //                 }
-                //                 return response.json();
-                //             })
-                //             .catch((error) => {
-                //                 Swal.showValidationMessage(`Request failed: ${error}`);
-                //             });
-                //     },
-                //     allowOutsideClick: () => !Swal.isLoading(),
-                // }).then((result) => {
-                //     if (result.isConfirmed) {
-                //         Swal.fire({
-                //             title: `Score saved! Your position is: #1 out of 10`,
-                //         });
-                //     }
-                // });
             } else {
                 this.chances = this.chances.substring(2) + "🤍";
             }
@@ -141,6 +120,7 @@ export default {
     },
 };
 </script>
+<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .title {
     color: white;
