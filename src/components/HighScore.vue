@@ -1,70 +1,85 @@
 <template>
-    <div class="highScoreContainer">
-        <button id="highScoreButton" @click.prevent="workInProgress()">
-            {{ this.appText[this.appLang]["showHighScores"] }}
-        </button>
-    </div>
+    <div v-if="!dataIsLoaded" class="loader"></div>
+    <table v-if="dataIsLoaded" id="scores-table">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Username</th>
+                <th class="centered">Score</th>
+                <th class="centered">Language</th>
+                <th class="centered">Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr v-for="(score, index) in scores" :key="score[index]">
+                <td>{{ index + 1 }}</td>
+                <td>{{ score.username }}</td>
+                <td class="centered">{{ score.score }}</td>
+                <td class="centered">{{ score.language }}</td>
+                <td class="centered">{{ score.date }}</td>
+            </tr>
+        </tbody>
+    </table>
 </template>
-<script>
 
-export default {
-    name: "High Score",
-    props: { appLang: String, appText: Object },
-    data() {
-        return {
-            topScores: [],
-        };
-    },
-    methods: {
-        workInProgress() {
-            this.$swal.fire({
-                icon: "warning",
-                title: this.appText[this.appLang]["workInProgress"],
-                customClass: "swal-workInProgress",
-                showConfirmButton: false,
-                timer: 1000,
-                toast: true,
-            });
-        },
-        // Legacy code, will be removed in a future release. - Humberto Axl 13/04/2023
-        // async showHighScores() {
-        //     this.topScores = await this.getHighScores()
-        //     this.topScores.sort(function (a, b) {
-        //         return b.score - a.score;
-        //     });
-        //     console.log(this.topScores);
-        //     let topScoreList = []
-        //     for (const index in this.topScores) {
-        //         topScoreList.push(`${parseInt(index) + 1} - ${this.topScores[index].name}`)
-        //     }
-        //     console.log(topScoreList.join('<br>'))
-        // },
-        // async getHighScores() {
-        //     return [
-        //         { name: 'Humberto', score: 23, date: '13-01-2022' },
-        //         { name: 'Joelson', score: 25, date: '14-01-2022' },
-        //         { name: 'Tatiana', score: 25, date: '15-01-2022' }
-        //     ]
-        // }
-    },
-};
-</script>
-<style>
-#highScoreButton {
-    margin-top: 10px;
-    width: 180px !important;
+<style scoped>
+table {
+    border-collapse: collapse;
+    width: 100%;
+    margin-bottom: 1rem;
 }
 
-.highScoreContainer {
-    margin-bottom: 40px;
+th,
+td {
+    border: 1px solid #ddd;
+    padding: 0.5rem;
+    text-align: left;
 }
 
-.swal-workInProgress {
-    width: 265px !important;
-    font-weight: bold !important;
+th {
+    background-color: #f2f2f2;
+    font-weight: bold;
 }
 
-.swal-workInProgress .swal2-html-container {
-    font-weight: bold !important;
+tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+tr:hover {
+    background-color: #ddd;
+}
+
+.centered {
+    text-align: center;
+}
+
+.loader {
+    border: 8px solid #f3f3f3; /* Light grey */
+    border-top: 8px solid #3498db; /* Blue */
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 2s linear infinite;
+    margin: 20px auto;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
 }
 </style>
+
+<script setup>
+import { ref } from "vue";
+import { getPlayersScoresSortedByScoreAndData } from "@/services/api.js";
+const dataIsLoaded = ref(false);
+const scores = ref("");
+getPlayersScoresSortedByScoreAndData().then((playerScores) => {
+    scores.value = playerScores;
+    dataIsLoaded.value = true;
+});
+</script>
