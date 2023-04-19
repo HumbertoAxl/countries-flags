@@ -12,6 +12,7 @@ const firebaseConfig = {
     measurementId: import.meta.env.VITE_MEASUREMENT_ID,
 };
 
+console.log(import.meta.env.VITE_API_KEY)
 const app = initializeApp(firebaseConfig);
 
 // Initialize Realtime Database and get a reference to the service
