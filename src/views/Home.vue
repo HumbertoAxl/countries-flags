@@ -52,7 +52,7 @@ import HighScore from "@/components/HighScore.vue";
 
 const blockUserInput = ref(false);
 const score = ref(0);
-const chances = ref("");
+const chances = ref("🧡🧡🧡");
 const appLang = ref(false);
 const tipsNumber = ref(20);
 const flagImage = ref("");
