@@ -138,7 +138,7 @@ function drawFlag() {
     let randomNumber = Math.floor(Math.random() * countries.length);
     activeFlag.value = countries[randomNumber][`code`].toLocaleLowerCase();
     correctAnswer.value = countries[randomNumber][`name${appLang.value}`];
-    flagImage.value = `/src/assets/flags/${activeFlag.value}.png`;
+    flagImage.value = `/assets/flags/${activeFlag.value}.png`;
     countries.splice(randomNumber, 1);
 }
 
