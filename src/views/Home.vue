@@ -15,17 +15,27 @@
                     <input type="text" v-model="userAnswer" />
                     <br />
                     <div class="buttonsContainer">
-                        <button id="tipsButton" type="button" @click.prevent="giveTip()">💡</button>
-                        <button id="submitButton" type="submit" :disabled="blockUserInput" @click.prevent="submitAnswer()">
+                        <button
+                            id="tipsButton"
+                            type="button"
+                            :disabled="tipsNumber == 0 || tip !== ''"
+                            @click.prevent="giveTip()"
+                        >
+                            💡
+                        </button>
+                        <button
+                            id="submitButton"
+                            type="submit"
+                            :disabled="blockUserInput"
+                            @click.prevent="submitAnswer()"
+                        >
                             {{ appText[appLang]["submit"] }}
                         </button>
                     </div>
                     <br />
-                    <!-- <router-link to="/high-scores"> -->
                     <button id="highScoresButton" type="button" @click.prevent="showHighScores()">
-                        Show high scores
+                        {{ appText[appLang]["showHighScores"] }}
                     </button>
-                    <!-- </router-link> -->
                 </form>
             </div>
         </div>
@@ -39,9 +49,10 @@ import Swal from "sweetalert2";
 import { createVNode, render, ref, onMounted } from "vue";
 import { saveScore } from "@/services/api";
 import HighScore from "@/components/HighScore.vue";
+
 const blockUserInput = ref(false);
 const score = ref(0);
-const chances = ref("🧡🧡🧡");
+const chances = ref("");
 const appLang = ref(false);
 const tipsNumber = ref(20);
 const flagImage = ref("");
@@ -51,12 +62,14 @@ const correctAnswer = ref("");
 const showTip = ref(false);
 const tip = ref("");
 const table = ref("");
+const gameOver = ref(false);
 
 async function handleWrongAnswer() {
     let gameOverText = appText[appLang.value]["gameOver"];
     gameOverText[1] = correctAnswer.value;
     gameOverText[3] = score.value;
     if (!chances.value.includes("🧡")) {
+        gameOver.value = true;
         Swal.fire({
             icon: "error",
             title: "Game over!",
@@ -67,31 +80,33 @@ async function handleWrongAnswer() {
             allowOutsideClick: false,
             input: "text",
             inputAttributes: {
-                placeholder: "Seu nome",
+                placeholder: appText[appLang.value]["userNamePlaceholder"],
             },
-            showLoaderOnConfirm: true,
-            cancelButtonText: "Não salvar",
-            confirmButtonText: "Salvar",
+            cancelButtonText: appText[appLang.value]["dontSave"],
+            confirmButtonText: appText[appLang.value]["save"],
             reverseButtons: true,
         }).then(async (result) => {
-            console.log(result);
             if (result.isConfirmed) {
-                await saveScore(result.value, score.value, appLang.value).then((numberOfPlayers) => {
-                    Swal.fire({
-                        title: `Done! Your position is: #1 out of 10`, //TODO: Show actual player numbers
-                        text: "Let's improve this score even more?",
-                        confirmButtonText: "Yes!",
-                        allowOutsideClick: false,
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            window.location = "/";
-                        }
-                    });
-                });
+                await saveScore(result.value, score.value, appLang.value).then(
+                    (numberOfPlayers) => {
+                        Swal.fire({
+                            title: appText[appLang.value]["scoreSaved"], //TODO: Show actual player numbers
+                            text: appText[appLang.value]["scoreComparison"],
+                            confirmButtonText: appText[appLang.value]["yes"],
+                            cancelButtonText: appText[appLang.value]["noLetsPlayAgain"],
+                            showCancelButton: true,
+                            allowOutsideClick: false,
+                            reverseButtons: true,
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                showHighScores();
+                            } else {
+                                window.location = "/";
+                            }
+                        });
+                    },
+                );
             }
-            // Swal.fire({
-            //     title: "Wanna play again?"
-            // })
         });
     } else {
         chances.value = chances.value.substring(2) + "🤍";
@@ -123,11 +138,10 @@ function drawFlag() {
     let randomNumber = Math.floor(Math.random() * countries.length);
     activeFlag.value = countries[randomNumber][`code`].toLocaleLowerCase();
     correctAnswer.value = countries[randomNumber][`name${appLang.value}`];
-    console.log(correctAnswer.value);
     flagImage.value = `/src/assets/flags/${activeFlag.value}.png`;
     countries.splice(randomNumber, 1);
-    // return flagImage.value, correctAnswer.value;
 }
+
 async function submitAnswer() {
     blockUserInput.value = true;
     if (
@@ -136,7 +150,6 @@ async function submitAnswer() {
     ) {
         score.value = score.value + 1;
         document.querySelector("#formFlags > div.tipContainer").style.visibility = "hidden";
-        document.getElementById("tipsButton").disabled = false;
         await Swal.fire({
             icon: "success",
             title: appText[appLang.value]["correctAnswer"],
@@ -145,6 +158,7 @@ async function submitAnswer() {
             toast: true,
             customClass: "swal-answer",
         });
+        tip.value = "";
         if (countries.length > 0) {
             showTip.value = false;
             userAnswer.value = "";
@@ -172,17 +186,17 @@ async function submitAnswer() {
             customClass: "swal-answer",
         });
         handleWrongAnswer();
-        //$emit("wrongAnswer", correctAnswer);
     }
     blockUserInput.value = false;
 }
 function giveTip() {
     if (tipsNumber.value == 0) {
-        Swal.fire("You have no tips left, sorry :(");
-    } else {
+        Swal.fire(appText[appLang.value]["noTips"]);
+    }
+
+    if (tip.value === "") {
         showTip.value = true;
-        //$emit("tipUsed");
-        document.getElementById("tipsButton").disabled = true;
+        tipsNumber.value = tipsNumber.value - 1;
         tip.value = generateTip();
     }
 }
@@ -198,11 +212,6 @@ function generateTip() {
             correctAnswer.value[sortedNumber].toString() !== "-"
         ) {
             randomNumbers.push(sortedNumber);
-            console.log(sortedNumber);
-        } else if (correctAnswer.value[sortedNumber].toString() === " ") {
-            console.log(sortedNumber + " é um espaço");
-        } else {
-            console.log(sortedNumber + " está repetido");
         }
     }
     randomNumbers.sort(function (a, b) {
@@ -261,12 +270,18 @@ async function showHighScores() {
     }
 
     Swal.fire({
-        title: "High Scores",
+        allowOutsideClick: false,
         html: table.value,
+        confirmButtonText: gameOver.value ? appText[appLang.value]["playAgain"] : "Ok",
+    }).then((result) => {
+        if (result.isConfirmed && gameOver.value === true) {
+            window.location = "/";
+            gameOver.value = false;
+        }
     });
 }
 </script>
-<style scoped>
+<style>
 .title {
     color: white;
     text-align: center;
@@ -387,6 +402,11 @@ span {
     margin-bottom: 10px;
 }
 
+.tipContainer {
+    margin-top: 5px;
+    margin-bottom: 5px;
+    visibility: hidden;
+}
 
 .swal-answer .swal2-title {
     font-family: arial !important;
@@ -406,5 +426,9 @@ span {
     height: 40px;
     animation: spin 2s linear infinite;
     margin: 20px auto;
+}
+
+.swal-languageSelect .swal2-title {
+    font-size: 1.5em !important;
 }
 </style>

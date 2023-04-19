@@ -17,6 +17,20 @@ const appText = {
         playAgain: "Play again!",
         congratulations: "Congratulations!",
         gameWon: `Wow, you've got all the flags right! That's impressive! You can call yourself a flag master.`,
+        save: "Save",
+        dontSave: "Don't save",
+        userNamePlaceholder: "Your name",
+        noTips: "You have no tips left",
+        table: {
+            userName: "Username",
+            score: "Score",
+            language: "Language",
+            date: "Date",
+        },
+        scoreSaved: "Scored saved successfully.",
+        scoreComparison: "Wanna check out how you compare to others?",
+        yes: "Yes",
+        noLetsPlayAgain: "No, let's play again"
     },
     BR: {
         tip: "Dica",
@@ -36,6 +50,20 @@ const appText = {
         playAgain: "Jogar novamente!",
         congratulations: "Parabéns",
         gameWon: `Você acertou todas as bandeiras! Que impressionante! Pode-se dizer que você é o mestre das bandeiras.`,
+        save: "Salvar",
+        dontSave: "Não salvar",
+        userNamePlaceholder: "Seu nome",
+        noTips: "Você usou todas suas dicas",
+        table: {
+            userName: "Usuário",
+            score: "Pontuação",
+            language: "Idioma",
+            date: "Data",
+        },
+        scoreSaved: "Pontuação salva com sucesso.",
+        scoreComparison: "Quer ver como sua pontuação se compara a de outras pessoas?",
+        yes: "Sim",
+        noLetsPlayAgain: "Não, vamos jogar novamente."
     },
 };
 

@@ -4,10 +4,10 @@
         <thead>
             <tr>
                 <th>#</th>
-                <th>Username</th>
-                <th class="centered">Score</th>
-                <th class="centered">Language</th>
-                <th class="centered">Date</th>
+                <th>{{ appText[appLang]["table"]["userName"] }}</th>
+                <th class="centered">{{ appText[appLang]["table"]["score"] }}</th>
+                <th class="centered">{{ appText[appLang]["table"]["language"] }}</th>
+                <th class="centered">{{ appText[appLang]["table"]["date"] }}</th>
             </tr>
         </thead>
         <tbody>
@@ -27,7 +27,7 @@ table {
     border-collapse: collapse;
     width: 100%;
     margin-bottom: 1rem;
-    font-size: 12px;
+    font-size: 14px;
 }
 
 th,
@@ -77,8 +77,11 @@ tr:hover {
 <script setup>
 import { ref } from "vue";
 import { getPlayersScoresSortedByScoreAndData } from "@/services/api.js";
+import appText from "@/js/language";
+
 const dataIsLoaded = ref(false);
 const scores = ref("");
+const appLang = ref("EN");
 getPlayersScoresSortedByScoreAndData().then((playerScores) => {
     scores.value = playerScores;
     dataIsLoaded.value = true;

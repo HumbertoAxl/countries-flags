@@ -28,12 +28,6 @@ pre {
     margin: 0px;
 }
 
-.tipContainer {
-    margin-top: 5px;
-    margin-bottom: 5px;
-    visibility: hidden;
-}
-
 #app {
     margin-top: 60px;
     font-family: Arial, sans-serif;
@@ -41,8 +35,5 @@ pre {
     -moz-osx-font-smoothing: grayscale;
     -webkit-text-size-adjust: none !important;
     text-align: center;
-}
-.swal-languageSelect .swal2-title {
-    font-size: 1.5em !important;
 }
 </style>
