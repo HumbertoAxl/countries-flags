@@ -145,8 +145,8 @@ function drawFlag() {
 async function submitAnswer() {
     blockUserInput.value = true;
     if (
-        userAnswer.value.toLocaleLowerCase() === correctAnswer.value.toLocaleLowerCase() ||
-        userAnswer.value.toLocaleLowerCase() === "damiao"
+        userAnswer.value.toLocaleLowerCase().trim() === correctAnswer.value.toLocaleLowerCase().trim() ||
+        userAnswer.value.toLocaleLowerCase().trim() === "damiao"
     ) {
         score.value = score.value + 1;
         document.querySelector("#formFlags > div.tipContainer").style.visibility = "hidden";
