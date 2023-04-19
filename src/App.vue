@@ -9,7 +9,7 @@
 <style>
 body {
     font-family: Segoe UI, Tahoma, Geneva, Verdana, sans-serif;
-    background-image: url("public/assets/geobackground.jpg");
+    background-image: url("/assets/geobackground.jpg");
     background-size: 100%;
     margin: 0;
     padding: 0;
