@@ -6,15 +6,6 @@
                 {{ appText[appLang]["score"] }}: {{ score }}
                 <span style="float: right">{{ appText[appLang]["tip"] }}: {{ tipsNumber }}</span>
             </div>
-            <!-- <FlagsContainer
-                @correctAnswer="score++"
-                @wrongAnswer="wrongAnswer()"
-                @tipUsed="tipsNumber--"
-                :score="score"
-                :tipsNumber="tipsNumber"
-                :appLang="appLang"
-                :appText="appText"
-            ></FlagsContainer> -->
             <div class="flags">
                 <img id="flagImage" :src="flagImage" />
                 <form id="formFlags">
@@ -25,7 +16,7 @@
                     <br />
                     <div class="buttonsContainer">
                         <button id="tipsButton" type="button" @click.prevent="giveTip()">💡</button>
-                        <button id="submitButton" type="submit" @click.prevent="submitAnswer()">
+                        <button id="submitButton" type="submit" :disabled="blockUserInput" @click.prevent="submitAnswer()">
                             {{ appText[appLang]["submit"] }}
                         </button>
                     </div>
@@ -48,6 +39,7 @@ import Swal from "sweetalert2";
 import { createVNode, render, ref, onMounted } from "vue";
 import { saveScore } from "@/services/api";
 import HighScore from "@/components/HighScore.vue";
+const blockUserInput = ref(false);
 const score = ref(0);
 const chances = ref("🧡🧡🧡");
 const appLang = ref(false);
@@ -137,6 +129,7 @@ function drawFlag() {
     // return flagImage.value, correctAnswer.value;
 }
 async function submitAnswer() {
+    blockUserInput.value = true;
     if (
         userAnswer.value.toLocaleLowerCase() === correctAnswer.value.toLocaleLowerCase() ||
         userAnswer.value.toLocaleLowerCase() === "damiao"
@@ -181,6 +174,7 @@ async function submitAnswer() {
         handleWrongAnswer();
         //$emit("wrongAnswer", correctAnswer);
     }
+    blockUserInput.value = false;
 }
 function giveTip() {
     if (tipsNumber.value == 0) {

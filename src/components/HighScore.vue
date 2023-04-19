@@ -27,6 +27,7 @@ table {
     border-collapse: collapse;
     width: 100%;
     margin-bottom: 1rem;
+    font-size: 12px;
 }
 
 th,
