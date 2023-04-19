@@ -1,7 +1,23 @@
-# Vue 3 + Vite
+# Flag Guesser
 
-This template should help get you started developing with Vue 3 in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+Welcome to the Flag Guesser, a web-based game that challenges you to guess the country name based on the flag shown on the screen. A random flag will be drawn until you guess all of them correctly.
 
-## Recommended IDE Setup
+## Demo
 
-- [VS Code](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur) + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin).
+You can try the game yourself by visiting the [live demo](https://flags.humbertoaxl.dev/).
+
+## About this project
+
+This was my first personal project, and I created it to learn Vue 3 while I was quarantining after moving to Australia. After its initial release, I left it untouched until recently when I implemented a highscore system that is stored in Firebase and did some cleanup in the JavaScript code. The popups are shown using SweetAlert2.
+The code is not where I want it to be, maybe in the future I'll rewrite it.
+
+Thanks for reading, and I hope you have fun playing the game!
+
+## Dependencies
+
+- Vue 3.2.47
+- Vue-router 4.1.6
+- Vue-sweetalert2 5.0.5
+- Firebase 9.19.1
+
+Built using Vite 4.2.0.
