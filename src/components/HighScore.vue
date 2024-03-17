@@ -83,7 +83,7 @@ const dataIsLoaded = ref(false);
 const scores = ref("");
 const appLang = ref("EN");
 getPlayersScoresSortedByScoreAndData().then((playerScores) => {
-    scores.value = playerScores;
+    scores.value = playerScores.filter(playerScore => playerScore);
     dataIsLoaded.value = true;
 });
 </script>
